@@ -1,49 +1,40 @@
 #include "\Programs\RampRiot\HolomonicAPI.h"
 #include "\Programs\RampRiot\utils\sensor.h"
+#include "JoystickDriver.c"
 
 task p1()
 {
-	while(true) {
-		control(0,0,0,0);
-		waitForStart();
+	// Wait for the beginning
 
-		int power = 35;
-		int spinPowerIncrement = 10;
-		bool blockDeposited = true;
-		while(blockDeposited == true)
-		{
-			while(getDirectionFromIR() != 5){
-				move(reverse, power);
-			}
-			nxtDisplayTextLine(0, "%d IR Light", getPowerFromAcIR());
-			nxtDisplayTextLine(2, "%d Direction", (getDirectionFromIR()));
-
-			if(getDirectionFromIR() == 5)
-			{
-				move(forward, power);
-			} else if(getDirectionFromIR() < 5 && getDirectionFromIR() != 0)
-			{
-				move(spin_right, getSpinPowerFromIR(spinPowerIncrement));
-			} else if(getDirectionFromIR() > 5)
-			{
-				move(spin_left, getSpinPowerFromIR(spinPowerIncrement));
-			} else
-			{
-				move(none, 0);
-			}
-
-			if(getPowerFromAcIR() > 150){
-				wait10Msec(500);
-				while(getDirectionFromIR() == 5){
-					wait10Msec(500);
-					move(reverse, power);
-				}
-				move(none, 0);
-				servo[servo1] = 190;
-				wait1Msec(1000);
-				servo[servo1] = 75;
-				blockDeposited = false;
-			}
+	bool blockDeposited = true;
+	while(blockDeposited == true)
+	{
+		while(getDirectionFromIR() != 5){
+			move(left, 35);
 		}
+		control(0,0,0,0);
+		//wait10Msec(10);
+		//while(getDirectionFromIR() == 5){
+		//wait10Msec(500);
+		//move(left, 20);
+		//wait1Msec(10);
+		//}
+		move(left, 35);
+		wait10Msec(25);
+		move(none, 0);
+		servo[servo1] = 190;
+		wait10Msec(100);
+		servo[servo1] = 75;
+		wait10Msec(100);
+		blockDeposited = false;
 	}
+	/*while(SensorValue[USonic] > 100){
+	move(forward, 50);
+	wait1Msec(10);
+	}
+	move(left,75);
+	wait1Msec(100);
+	move(reverse, 75);
+	wait1Msec(50);
+	} */
 }

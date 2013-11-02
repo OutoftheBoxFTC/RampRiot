@@ -24,37 +24,37 @@ void control(int m1, int m2, int m3, int m4) {
 
 void move(Direction dir, int power) { //move function
 	switch(dir) {//switch through all Direction values
-		case forward: //check if case of dir equals forward
-			control(-1 * power, power, power, -1 * power);//assigns power to robot based off case
-			break;
-	  case reverse: //check if case of dir equals reverse
-			control(power, -1 * power, -1 * power, power);//assigns power to robot based off case
-			break;
-	  case left: //check if case of dir equals left
-			control(power, power, -1 * power, -1 * power);//assigns power to robot based off case
-			break;
-		case right: //check if case of dir equals right
-			control(-1 * power, -1 * power, power, power);//assigns power to robot based off case
-			break;
-	  case spin_left: //check if case of dir equals spins_left
-			control(power, power, power, power);//assigns power to robot based off case
-			break;
-		case spin_right: //check if case of dir equals spins_left
-			control(-1 * power, -1 * power, -1 * power, -1 * power);//assigns power to robot based off case
-			break;
-	  case diagonal_F_L: //check if case of dir equals diagonal_F_L
-			control(0, power, 0, -1 * power);//assigns power to robot based off case
-			break;
-	  case diagonal_F_R: //check if case of dir equals diagonal_F_R
-			control(-1 * power, 0, power, 0);//assigns power to robot based off case
-			break;
-		case diagonal_R_R: //check if case of dir equals diagonal_R_R
-			control(0, -1 * power, 0, power);//assigns power to robot based off case
-			break;
-	  case diagonal_R_L: //check if case of dir equals diagonal_R_L
-			control(power, 0, -1 * power, 0);//assigns power to robot based off case
-			break;
-	  default:
-	  	control(0, 0, 0, 0);
-		};
+	case forward: //check if case of dir equals forward
+		control(-1 * power, power, power, -1 * power);//assigns power to robot based off case
+		break;
+	case reverse: //check if case of dir equals reverse
+		control(power, -1 * power, -1 * power, power);//assigns power to robot based off case
+		break;
+	case left: //check if case of dir equals left
+		control(power, power, -1 * power, -1 * power);//assigns power to robot based off case
+		break;
+	case right: //check if case of dir equals right
+		control(-1 * power, -1 * power, power, power);//assigns power to robot based off case
+		break;
+	case spin_left: //check if case of dir equals spins_left
+		control(power, power, power, power);//assigns power to robot based off case
+		break;
+	case spin_right: //check if case of dir equals spins_left
+		control(-1 * power, -1 * power, -1 * power, -1 * power);//assigns power to robot based off case
+		break;
+	case diagonal_F_L: //check if case of dir equals diagonal_F_L
+		control(0, power, 0, -1 * power);//assigns power to robot based off case
+		break;
+	case diagonal_F_R: //check if case of dir equals diagonal_F_R
+		control(-1 * power, 0, power, 0);//assigns power to robot based off case
+		break;
+	case diagonal_R_R: //check if case of dir equals diagonal_R_R
+		control(0, -1 * power, 0, power);//assigns power to robot based off case
+		break;
+	case diagonal_R_L: //check if case of dir equals diagonal_R_L
+		control(power, 0, -1 * power, 0);//assigns power to robot based off case
+		break;
+	default:
+		control(0, 0, 0, 0);
+	};
 }
