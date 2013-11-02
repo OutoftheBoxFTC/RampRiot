@@ -16,9 +16,7 @@
 #pragma platform(Tetrix)
 //Include Dependiences
 #include "JoystickDriver.c"
-#include "\Projects\RampRiot\autonomous\AUTONOMOUS_P1.h"
-#include "\Programs\IR_APIS\10_28_13_V1.1_Holonomic_.c"
-#include
+#include "\Programs\RampRiot\autonomous\AUTONOMOUS_P1.h"
 
 task main()
 {
