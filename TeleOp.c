@@ -7,14 +7,14 @@
 #pragma config(Motor,  mtr_S1_C2_2,     Motor3,        tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C4_1,     Motor5,        tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C4_2,     motor6,        tmotorTetrix, openLoop)
-#pragma config(Servo,  srvo_S1_C3_1,    servo1,               tServoNone)
+#pragma config(Servo,  srvo_S1_C3_1,    servo1,               tServoNojoystjoystick
 #pragma config(Servo,  srvo_S1_C3_2,    servo2,               tServoNone)
 #pragma config(Servo,  srvo_S1_C3_3,    servo3,               tServoNone)
 #pragma config(Servo,  srvo_S1_C3_4,    servo4,               tServoNone)
 #pragma config(Servo,  srvo_S1_C3_5,    servo5,               tServoNone)
 #pragma config(Servo,  srvo_S1_C3_6,    servo6,               tServoNone)
 #pragma platform(Tetrix)
-//Include Dependiences
+//Include Dependien
 #include "\Programs\RampRiot\utils\math.h"
 #include "JoystickDriver.c"
 #include "\Programs\RampRiot\HolomonicAPI.h"
@@ -85,12 +85,6 @@ void assignMotorSpeedFromJoyStick()
 	}
 	//Apply new power
 	control(m1, m2, m3, m4);
-	// Debugging
-	/*nxtDisplayTextLine(0, "m1 - %d", m1);
-	nxtDisplayTextLine(1, "m2 - %d", m2);
-	nxtDisplayTextLine(2, "m3 - %d", m3);
-	nxtDisplayTextLine(3, "m4 - %d", m4);
-	nxtDisplayTextLine(4, "Direction - %d", direction);*/
 }
 
 void rotateRobot()
@@ -111,25 +105,31 @@ task main()
 {
 	while(true)
 	{
+		if(joystick.joy2_Buttons & button5)
+		{
+			motor[Motor5] = 50;
+		} else if(joystick.joy2_Buttons & button6)
+		{
+			motor[Motor5] = -50;
+		} else if(joystick.joy2_Buttons & button7)
+		{
+			servo[servo2] = 0;
+			servo[servo3] = 180;
+		} else if(joystick.joy2_Buttons & button8)
+		{
+			servo[servo2] = 100;
+			servo[servo3] = 80;
+		}
+
 		if(joystick.joy1_Buttons & button5)
 		{
 			move(spin_right, getVelocityFromJoy2());
-		}
-		else if(joystick.joy1_Buttons & button6)
+		} else if(joystick.joy1_Buttons & button6)
 		{
 			move(spin_left, getVelocityFromJoy2());
-		}
-		else
+		} else
+		{
 			assignMotorSpeedFromJoyStick();
+		}
 	}
-	motor[Motor5] = 75;
-	//if (joystick.joy1_Buttons & button7)
-	//{
-	//	motor[Motor5] = 85; //ensures that the spinner doesn't spin too fast.
-	//}
-	//else
-	//{
-	//  motor[Motor5] = 0;
-	//}
-	//rotateRobot();
 }
