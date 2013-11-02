@@ -21,6 +21,7 @@
 task main()
 {
 	waitForStart();
+
 	StartTask(p1);
 	while (true) {
 		wait10Msec(1);
