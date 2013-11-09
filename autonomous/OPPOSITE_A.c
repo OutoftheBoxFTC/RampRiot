@@ -28,14 +28,20 @@
 
 task main()
 {
-	//Wait till start too begin executing
-	waitForStart();
-	//Reset The servers to the default rotation
+
+	//Wait till start too begin exese
+	servo[servo1] = 0;
 	servo[servo2] = 0;
 	servo[servo3] = 255;
-	servo[servo1] = 75;
+	waitForStart();
+	//Reset The servers to the default rotation
 
-	//Start an autonomous program from the incuded files.
+	//       DELETE ME          //
+	wait10Msec(1500); //DELETE ME
+	//       DELETE ME          //
+
+	//Start an autonomous program from the incuded files
+	setHeading(opposite);
 	StartTask(p1);
 	//Start a paging file to act as a program place holder.
 	while (true) {

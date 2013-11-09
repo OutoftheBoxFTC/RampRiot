@@ -28,7 +28,7 @@
 
 task main()
 {
-	//Wait till start too begin executing
+	//Wait till start to begin executing
 	waitForStart();
 	//Reset The servers to the default rotation
 	servo[servo2] = 0;
