@@ -6,7 +6,7 @@ int           nFileSize = 100;
 void write(short val) {
 	Delete(sFileName ,nIOResult);
 	OpenWrite(hFileHandle, nIOResult, sFileName, nFileSize);
-	WriteShort(hFileHandle, nIOResult, HTMCreadHeading(HTMC));
+	WriteShort(hFileHandle, nIOResult, val);
 	Close(hFileHandle, nIOResult);
 
 }
@@ -16,4 +16,5 @@ int read() {
 	short readVal = 0;
 	ReadShort(hFileHandle, nIOResult, readVal);
 	Close(hFileHandle, nIOResult);
+	return readVal;
 }
