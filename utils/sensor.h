@@ -1,4 +1,5 @@
 #include "drivers/hitechnic-irseeker-v2.h"
+#include "drivers/hitechnic-compass.h"
 
 int getDirectionFromIR()
 {

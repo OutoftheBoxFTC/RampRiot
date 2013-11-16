@@ -42,7 +42,7 @@ constant actions of being ran when in a 0 0 position.
 */
 bool isJoystickBeingMoved(int axis)
 {
-	//Is the axis of between 10 and -10
+	//Is the axis of the joystick between 10 and -10
 	return (axis <= 10 && axis >= -10);
 }
 

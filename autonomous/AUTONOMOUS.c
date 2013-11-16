@@ -25,20 +25,61 @@
 // motors to default positions and creates a infinite loop
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+int totalPrograms = 2;
+
+void updateTask(int pNum) {
+	String desc = "";
+	String name = "";
+	TaskID rVal = NULL;
+	if (pNum == 1) {
+		name = "Normal";
+		desc = "Runs Robot left to drop I/R blck";
+		setHeading(normal);
+		rVal = p1;
+	} else if (pNum == 2)
+	{
+		setHeading(opposite);
+		name = "Opposite";
+		desc = "Runs Robot right to drop I/R blck";
+		rVal = p2;
+	}
+	eraseDisplay();
+	nxtDisplayCenteredBigTextLine(1, "P Chooser");
+	nxtDisplayString(3, "%d|%d", name, pNum);
+	nxtDisplayString(4, desc);
+
+}
 
 task main()
 {
-	//Wait till start too begin executing
+	nxtDisplayCenteredBigTextLine(0, Choose The Program);
+
+	int pNum = 1;
+	while(nNxtButtonPressed != kEnterButton) {
+		if (nNxtButtonPressed == kLeftButton) {
+			pNum++;
+		} else if(nNxtButtonPressed == kRightButton)
+		{
+			pNum--;
+		}
+		if(pNum < 0){
+			pNum = totalPrograms;
+		}
+		else if(pNum > totalPrograms){
+			pNum = 0;
+		}
+		update
+	}
+	//Wait till start to begin executing
 	waitForStart();
-	//Reset The servers to the default rotation
+	//Reset The servo to the default rotation
 	servo[servo2] = 0;
 	servo[servo3] = 255;
 	servo[servo1] = 75;
 
 	//Start an autonomous program from the incuded files.
-	StartTask(p1);
+	StartTask(updateTask(pNum));
 	//Start a paging file to act as a program place holder.
-	while (true) {
-		wait10Msec(1);
-	}
+	while (true);
+	StopTask(updateTask(pNum));
 }
