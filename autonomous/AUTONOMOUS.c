@@ -1,6 +1,7 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTServo,  HTMotor)
 #pragma config(Sensor, S2,     HTIRS2,         sensorI2CCustom)
 #pragma config(Sensor, S3,     USonic,         sensorSONAR)
+#pragma config(Sensor, S4,     HTMC,           sensorI2CCustom)
 #pragma config(Motor,  mtr_S1_C1_1,     Motor1,        tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C1_2,     Motor4,        tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C2_1,     Motor2,        tmotorTetrix, openLoop)
@@ -17,6 +18,7 @@
 //Include Dependiences
 #include "JoystickDriver.c"
 #include "\Programs\RampRiot\autonomous\AUTONOMOUS_P1.h"
+#include "\Programs\RampRiot\utils\compassStorage.h"
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -27,6 +29,8 @@
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 int totalPrograms = 2;
+bool hasSelected = false; // Haven't selected Mode yet
+int pNum = 1; // Program we are on
 
 typedef enum {//List of directions our robot can go
 	START,
@@ -47,12 +51,14 @@ void updateTask(int pNum, TaskChoice choice) {
 		desc2 = "To deposit the";
 		desc3 = "I/R block";
 		setHeading(normal);
-		if (choice == START)// If variable = start, we execute task
-		{
-			StartTask(p1);
-		} else if (choice == STOP) // If we want to start the program
-		{
-			StopTask(p1);
+		if (s) {
+			if (choice == START)// If variable = start, we execute task
+			{
+				StartTask(p1);
+			} else if (choice == STOP) // If we want to start the program
+			{
+				StopTask(p1);
+			}
 		}
 	} else if (pNum == 2)
 	{
@@ -61,12 +67,15 @@ void updateTask(int pNum, TaskChoice choice) {
 		desc2 = "To deposit the";
 		desc3 = "I/R block";
 		setHeading(opposite); //If our robot needs to move Right, sets the directions
-		if (choice == START)
+		if (s)
 		{
-			StartTask(p1);
-		} else if (choice == STOP)
-		{
-			StopTask(p1);
+			if (choice == START)
+			{
+				StartTask(p1);
+			} else if (choice == STOP)
+			{
+				StopTask(p1);
+			}
 		}
 	}
 	nxtDisplayCenteredBigTextLine(0, "PChooser");
@@ -107,15 +116,44 @@ void updateTask(int pNum, TaskChoice choice) {
 
 }
 
-bool hasSelected = false; // Haven't selected Mode yet
-
-task main()
-{
+void initializeRobot() {
 	disableDiagnosticsDisplay(); // Display Joystick Diagnostics gets disabled so we have room to display text
 	eraseDisplay(); // clears screen
 
-	int pNum = 1; // Program we are on
-	while(nNxtButtonPressed != kEnterButton && !hasSelected) { //kEnterButton is the orange button
+	int total = 0;
+	int count = 0;
+
+	while (count < 5) {
+		// Get the true heading and relative heading from the sensor and
+		// display them on the screen.
+		while(nNxtButtonPressed != kEnterButton) {
+			eraseDisplay();
+			nxtDisplayCenteredBigTextLine(0, "Reading");
+			nxtDisplayTextLine(2, "Target Avg: %4d", total / count);
+			nxtDisplayTextLine(3, "Abs:   %4d", HTMCreadHeading(HTMC));
+			nxtDisplayCenteredTextLine(6, "Press enter");
+			nxtDisplayCenteredTextLine(7, "to set target");
+			wait1Msec(100);
+		}
+
+		// Reset the target no more than once a second
+		// This also helps with debouncing the [enter] button.
+		eraseDisplay();
+		nxtDisplayTextLine(1, "Changing");
+		nxtDisplayTextLine(2, "target");
+		wait1Msec(500);
+		// Set the current heading as the value for the offset to be used as the
+		// new zero-point for the relative heading returned by
+		// HTMCreadRelativeHeading()
+		count++;
+		total += HTMCreadHeading(HTMC);
+		PlaySound(soundBlip);
+		while(bSoundActive) break;
+	}
+	write(total / count);
+
+	while(nNxtButtonPressed != kEnterButton && !hasSelected)
+	{ //kEnterButton is the orange button
 		if (nNxtButtonPressed == kLeftButton) {
 			pNum++; // scrolls to the next option
 			PlaySound(soundBlip);
@@ -138,15 +176,14 @@ task main()
 		}
 	}
 	hasSelected = true;//prevents an infinite loop of program selection
-	eraseDisplay();//clear the previous menu
-	nxtDisplayCenteredBigTextLine(3, "Running");
+	nxtDisplayCenteredBigTextLine(3, "Waiting ");
+}
+
+task main()
+{
+	initializeRobot();
 	//Wait till start to begin executing
 	waitForStart();
-	//Reset The servo to the default rotation
-	servo[servo2] = 0;
-	servo[servo3] = 255;
-	servo[servo1] = 75;
-
 	//Start an autonomous program from the incuded files.
 	updateTask(pNum, START);
 	//Start a paging file to act as a program place holder.
