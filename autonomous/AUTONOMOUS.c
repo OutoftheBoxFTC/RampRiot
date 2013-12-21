@@ -1,6 +1,6 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTServo,  HTMotor)
-#pragma config(Sensor, S2,     HTIRS2,         sensorI2CCustom)
 #pragma config(Sensor, S3,     USonic,         sensorSONAR)
+#pragma config(Sensor, S2,     HTIRS2,         sensorI2CCustom)
 #pragma config(Sensor, S4,     HTMC,           sensorI2CCustom)
 #pragma config(Motor,  mtr_S1_C1_1,     Motor1,        tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C1_2,     Motor4,        tmotorTetrix, openLoop)
@@ -17,6 +17,7 @@
 #pragma platform(Tetrix)
 //Include Dependiences
 #include "JoystickDriver.c"
+#include "drivers/hitechnic-compass.h"
 #include "\Programs\RampRiot\autonomous\AUTONOMOUS_P1.h"
 #include "\Programs\RampRiot\utils\compassStorage.h"
 
@@ -51,14 +52,12 @@ void updateTask(int pNum, TaskChoice choice) {
 		desc2 = "To deposit the";
 		desc3 = "I/R block";
 		setHeading(normal);
-		if (s) {
-			if (choice == START)// If variable = start, we execute task
-			{
-				StartTask(p1);
-			} else if (choice == STOP) // If we want to start the program
-			{
-				StopTask(p1);
-			}
+		if (choice == START)// If variable = start, we execute task
+		{
+			StartTask(p1);
+		} else if (choice == STOP) // If we want to start the program
+		{
+			StopTask(p1);
 		}
 	} else if (pNum == 2)
 	{
@@ -67,15 +66,12 @@ void updateTask(int pNum, TaskChoice choice) {
 		desc2 = "To deposit the";
 		desc3 = "I/R block";
 		setHeading(opposite); //If our robot needs to move Right, sets the directions
-		if (s)
+		if (choice == START)
 		{
-			if (choice == START)
-			{
-				StartTask(p1);
-			} else if (choice == STOP)
-			{
-				StopTask(p1);
-			}
+			StartTask(p1);
+		} else if (choice == STOP)
+		{
+			StopTask(p1);
 		}
 	}
 	nxtDisplayCenteredBigTextLine(0, "PChooser");
