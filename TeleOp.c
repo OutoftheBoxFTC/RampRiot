@@ -62,20 +62,20 @@ void assignMotorSpeedFromJoyStick()
 {
 	//Get the direction in degrees that the robot needs to head from a coordinate map
 	int direction = getDirectionFromLocation(joystick.joy1_x1, joystick.joy1_y1);
-	if(direction < 90)
+	// 0 is the 90 as of now, so it is normalized
+	direction += 90;
+	// need to prevent values > 360
+	if(direction > 359)
 	{
-		direction += 270;
-	}
-	else
-	{
-		direction -= 90;
+		direction -= 360;
 	}
 	//read compass value
 	float readCompass = HTMCreadHeading(HTMC);
 	//if its negative one its disconnected
 	if (readCompass != -1) {
 		//since the motor is not disconected then we offset
-		direction += abs((int)(readCompass - read()));
+		//direction += (int)(readCompass - read());  Testing a diff formula
+	  direction += (int)(readCompass - read());
 		//using subtraction to prevent the value from going over 360.
 		if(direction > 359)
 		{
@@ -97,7 +97,7 @@ void assignMotorSpeedFromJoyStick()
 	int m2 = 0;
 	int m3 = 0;
 	int m4 = 0;
-	//If the joysticks are NOT at 0,0 calculate the power of the motors
+  //If the joysticks are NOT at 0,0 calculate the power of the motors
 	//This is required because function sin returns 70 when the joystick is at 0,0
 	if(!isJoystickBeingMoved(joystick.joy1_x1) || !isJoystickBeingMoved(joystick.joy1_y1))
 	{

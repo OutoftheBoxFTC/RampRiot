@@ -62,16 +62,34 @@ void assignMotorSpeedFromJoyStick()
 {
 	//Get the direction in degrees that the robot needs to head from a coordinate map
 	int direction = getDirectionFromLocation(joystick.joy1_x1, joystick.joy1_y1);
-	//read compass value
-	 float readCompass = HTMCreadHeading(HTMC);
-	//if its negative one its disconnected
-	if (readCompass != -1) {
-		//since the motor is not disconected then we offset
-		direction += readCompass - read();
-		//using modulo to prevent the value from going over 360.
-		direction %= 360;
+	if(direction < 90)
+	{
+		direction += 270;
 	}
+	else
+	{
+		direction -= 90;
+	}
+	//read compass value
+	float readCompass = HTMCreadHeading(HTMC);
+	//if its negative one its disconnected
+	if (readCompass > -1) {
+		//since the motor is not disconected then we offset
+		direction += abs((int)(read() - readCompass));
+		//using subtraction to prevent the value from going over 360.
 
+		while (!(direction <= 360 && direction >= 0))
+		{
+			if(direction > 360)
+			{
+				direction %= 360;
+			} else if(direction < 0)
+			{
+				direction += 360;
+			}
+		}
+	}
+	nxtDisplayTextLine(3, "%d", direction);
 
 	//Gets the velocity/speed from Joystick 2
 	float velocity = getVelocityFromJoy2();
@@ -116,7 +134,9 @@ task main()
 {
 
 	waitForStart();
-
+	eraseDisplay();
+	float displayHeading;
+	float readDisplay;
 	while(true)
 	{
 		if(joystick.joy2_Buttons & button5)
@@ -143,5 +163,9 @@ task main()
 		{
 			assignMotorSpeedFromJoyStick();
 		}
+		readDisplay = read();
+		displayHeading = HTMCreadHeading(HTMC);
+		nxtDisplayTextLine(1, "%d", readDisplay);
+		nxtDisplayTextLine(2, "%d", displayHeading);
 	}
 }
