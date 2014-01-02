@@ -81,9 +81,9 @@ void assignMotorSpeedFromJoyStick()
 		direction += abs((int)(read() - readCompass));
 		//using subtraction to prevent the value from going over 360.
 
-		while (!(direction <= 360 && direction >= 0))
+		while (!(direction < 360 && direction >= 0))
 		{
-			if(direction > 360)
+			if(direction > 359)
 			{
 				direction %= 360;
 			} else if(direction < 0)

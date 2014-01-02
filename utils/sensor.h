@@ -1,5 +1,15 @@
 #include "drivers/hitechnic-irseeker-v2.h"
 
+int getDirection()
+{
+	int _dirEnh, _strEnh;
+	if(!HTIRS2readEnhanced(HTIRS2, _dirEnh, _strEnh)) {
+		return 0;
+	}
+	return _dirEnh;
+}
+
+
 int getDirectionFromIR()
 {
 	int _dirEnh, _strEnh;

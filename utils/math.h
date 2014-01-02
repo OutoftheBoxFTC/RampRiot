@@ -30,5 +30,19 @@ int getDirectionFromLocation(int x, int y)
 	{
 		direction -= 90;
 	}
+
+	//Next few lines are a new addition to prevent direction from going "out of bounds"
+
+	while(direction >= 360)
+	{
+		direction -= 360;
+	}
+	while(direction <= -1)
+		{
+		  direction += 360;
+		}
+
+		// end new addition
+
 	return direction;
 }
