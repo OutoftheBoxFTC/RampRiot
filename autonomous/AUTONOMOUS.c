@@ -2,7 +2,7 @@
 #pragma config(Hubs,  S2, HTServo,  none,     none,     none)
 #pragma config(Sensor, S1,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S2,     ,               sensorI2CMuxController)
-#pragma config(Sensor, S3,     HTIRS2,         sensorI2CCustom)
+#pragma config(Sensor, S4,     HTIRS2,         sensorI2CCustom)
 #pragma config(Motor,  mtr_S1_C1_1,     Motor2,        tmotorTetrix, openLoop, reversed)
 #pragma config(Motor,  mtr_S1_C1_2,     Motor3,        tmotorTetrix, openLoop, reversed)
 #pragma config(Motor,  mtr_S1_C2_1,     Motor4,        tmotorTetrix, openLoop, reversed)
@@ -126,7 +126,9 @@ void updateTask(int pNum, TaskChoice choice) {
 void initializeRobot() {
 	disableDiagnosticsDisplay(); // Display Joystick Diagnostics gets disabled so we have room to display text
 	eraseDisplay(); // clears screen
-
+  servo[servo1] = 0;
+  servo[servo2] = 255;
+	servo[servo3] = 255;
 /*	int total = 0;
 	int count = 0;
 
@@ -190,6 +192,9 @@ task main()
 {
 	//initializeRobot();
 	//Wait till start to begin executing
+  servo[servo1] = 0;
+  servo[servo2] = 255;
+	servo[servo3] = 255;
 	waitForStart();
 	//Start an autonomous program from the incuded files.
 	updateTask(pNum, START);

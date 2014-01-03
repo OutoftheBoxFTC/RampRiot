@@ -74,10 +74,14 @@ void assignMotorSpeedFromJoyStick()
 	// 0 is the 90 as of now, so it is normalized
 	direction += 90;
 	// need to prevent values > 360
-	if(direction > 359)
+	while(direction >= 360)
 	{
 		direction -= 360;
 	}
+	while(direction <= -1)
+		{
+		  direction += 360;
+		}
 	//read compass value
 	//	float readCompass = HTMCreadHeading(HTMC);
 	//if its negative one its disconnected
@@ -86,14 +90,14 @@ void assignMotorSpeedFromJoyStick()
 	//direction += (int)(readCompass - read());  Testing a diff formula
 	//		direction += abs((int)(readCompass - read()));
 	//using subtraction to prevent the value from going over 360.
-	if(direction > 359)
-	{
-		direction -= 360;
-	}
-	else if(direction < 0)
-	{
-		direction += 360;
-	}
+	//if(direction > 359)
+	//{
+	//	direction -= 360;
+	//}
+	//else if(direction < 0)
+	//{
+	//	direction += 360;
+	//}
 	nxtDisplayTextLine(3, "%d", direction);
 	//}
 

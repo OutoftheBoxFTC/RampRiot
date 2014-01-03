@@ -9,16 +9,14 @@ typedef enum {//List of directions our robot can go
 
 heading h = normal;
 
+bool breakLoop = false;
+
 void setHeading(heading hd) {
 	h = hd;
 } // set if we start at right or left
 
 task p1
 {
-	servo[servo1] = 120;
-	servo[servo2] = 120;
-	servo[servo3] = 120;
-
 	tHTIRS2DSPMode _mode = DSP_600;
 	Direction l;
 	Direction r;
@@ -37,14 +35,14 @@ task p1
 	disableDiagnosticsDisplay();
 	//int qqKillMe = getDirection(); Onw of the many functions I ave used to identify the IR seeker problem.
 	//int IR = HTIRS2readACDir(HTIRS2);
-//	nxtDisplayTextLine(5, "%d", IR);
+	//	nxtDisplayTextLine(5, "%d", IR);
 	wait1Msec(1000);
 	while(HTIRS2readACDir(HTIRS2) != 5){  // we are not in front of the beacon, and we haven't checked every basket
-		//	move(l, 25);
+		move(l, 25);
 		nxtDisplayTextLine(1, "%d", HTIRS2readACDir(HTIRS2));
 		if(HTIRS2setDSPMode(HTIRS2, _mode))
 		{
-//			nxtDisplayTextLine(5, "%d", IR);
+			//			nxtDisplayTextLine(5, "%d", IR);
 		}
 		else
 		{
@@ -52,18 +50,38 @@ task p1
 		}
 		if(basketNum != 2)
 		{
-			wait10Msec(50);  // move a little
+			ClearTimer(T1);
+			while(T1 < 500){
+				if(HTIRS2readACDir(HTIRS2) == 5)
+				{
+					breakLoop = true;
+					PlaySound(soundBeepBeep);
+					break;
+				}
+			}
+			// move a little
 		}
 		else
 		{
-			wait10Msec(75);  // move more to compensate the middle piece
+			ClearTimer(T1);
+			while(T1 < 750){
+				move(l, 25);
+				if(HTIRS2readACDir(HTIRS2) == 5)
+				{
+					breakLoop = true;
+					PlaySound(soundBeepBeep);
+					break;
+				}
+			}
+			move(none,0);
+	//		wait10Msec(80);  // move more to compensate the middle piece
 			//	nxtDisplayTextLine(0, "%d", IR);
 			nxtDisplayTextLine(3, "%d", basketNum);
 		}
 		if(basketNum == 0)
 		{
 			nxtDisplayTextLine(2, "FIRST TIME");
-			wait10Msec(100);
+	//		wait10Msec(100);  Debugging test
 		}
 		else
 		{
@@ -73,14 +91,25 @@ task p1
 		wait10Msec(5);
 		basketNum++; //We checked this basket, move on or store our number, depending on if the basket has a beacon on it
 		//		qqKillMe = getDirection();
-	//	IR = HTIRS2readACDir(HTIRS2);
+		//	IR = HTIRS2readACDir(HTIRS2);
+		move(none, 0);
+		wait1Msec(250);   // Spin to adjust for Robot Drift
+		move(spin_left, 25);
+		wait1Msec(100);
+		move(none, 0);
+		wait1Msec(250);
 		nxtDisplayTextLine(1, "%d", HTIRS2readACDir(HTIRS2));
+		if(breakLoop)
+			{
+			  break;
+			}
+
 	}
 
 
 	nxtDisplayTextLine(0, "OMG WE WIN LIFE!!!!!!!1111!!!!!");
 	// Procedural movements to drop off our block, and then alert ourselves that we have dropped off the block. //
-  move(l, 25); //
+	move(l, 25); //
 	wait10Msec(4);
 	move(forward, 30);//Drive forward to deposit block
 	wait10Msec(45);//Pause to move.
@@ -97,34 +126,35 @@ task p1
 	wait10Msec(45); //Pause to move
 	move(none, 0);// Stop the robot
 
+	/*  PUT BACK AFTER TESTING !!!!!!!!!!!!!!!!!!!!!*************8
+
 	if(basketNum < 3) // basket is 1 or 2
 	{
-		move(r, 35);
-		wait1Msec(500 * basketNum); //if basket1, go 1/2 second to the right, else go 2* 1/2, or 1 second to the right
-		move(none,0); // stop to prevent wheel slips
-		wait1Msec(20);
-		move(forward, 35);
-		wait1Msec(500);
+	move(r, 35);
+	wait1Msec(500 * basketNum); //if basket1, go 1/2 second to the right, else go 2* 1/2, or 1 second to the right
+	move(none,0); // stop to prevent wheel slips
+	wait1Msec(20);
+	move(forward, 35);
+	wait1Msec(500);
 
-		move(none,0); // stop to prevent wheel slips
-		wait1Msec(20);
+	move(none,0); // stop to prevent wheel slips
+	wait1Msec(20);
 
-		move(l, 35);
-		wait1Msec(500);
-		move(none, 0);
+	move(l, 35);
+	wait1Msec(500);
+	move(none, 0);
 	}
 
 	else  // basket is 3 / 4
 	{
-		move(l, 35);  //reverse above procedure to minimize time spent, insted of going twice as far right, go left instead
-		wait1Msec(500 * (5 - basketNum)); //if basket 4, go 1/2 second to the left, because 4 is outside like 1 and 5-4 = 1, else go 5-3 = 2* 1/2, or 1 second to the left
-		move(none,0); // stop to prevent wheel slips
-		wait1Msec(20); //wait a little
-		move(forward, 35);
-		wait1Msec(500);
-		move(r, 35);  //reverse above procedure to minimize time spent, insted of going twice as far right, go left instead
-		wait1Msec(500);
-		move(none, 0);
-	}
-*/
+	move(l, 35);  //reverse above procedure to minimize time spent, insted of going twice as far right, go left instead
+	wait1Msec(500 * (5 - basketNum)); //if basket 4, go 1/2 second to the left, because 4 is outside like 1 and 5-4 = 1, else go 5-3 = 2* 1/2, or 1 second to the left
+	move(none,0); // stop to prevent wheel slips
+	wait1Msec(20); //wait a little
+	move(forward, 35);
+	wait1Msec(500);
+	move(r, 35);  //reverse above procedure to minimize time spent, insted of going twice as far right, go left instead
+	wait1Msec(500);
+	move(none, 0);
+	} */
 }
