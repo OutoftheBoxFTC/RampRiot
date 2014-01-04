@@ -2,8 +2,8 @@
 #pragma config(Hubs,  S2, HTServo,  none,     none,     none)
 #pragma config(Sensor, S1,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S2,     ,               sensorI2CMuxController)
-#pragma config(Sensor, S3,     HTIRS2,         sensorNone)
-#pragma config(Sensor, S4,     HTMC,           sensorI2CCustom)
+#pragma config(Sensor, S4,     HTIRS2,         sensorNone)
+#pragma config(Sensor, S3,     HTMC,           sensorI2CCustom)
 #pragma config(Motor,  mtr_S1_C1_1,     Motor2,        tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C1_2,     Motor3,        tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C2_1,     Motor4,        tmotorTetrix, openLoop)
@@ -79,27 +79,27 @@ void assignMotorSpeedFromJoyStick()
 		direction -= 360;
 	}
 	while(direction <= -1)
-		{
-		  direction += 360;
-		}
+	{
+		direction += 360;
+	}
 	//read compass value
-	//	float readCompass = HTMCreadHeading(HTMC);
+	float readCompass = HTMCreadHeading(HTMC);
 	//if its negative one its disconnected
-	//	if (readCompass != -1) {
-	//since the motor is not disconected then we offset
-	//direction += (int)(readCompass - read());  Testing a diff formula
-	//		direction += abs((int)(readCompass - read()));
-	//using subtraction to prevent the value from going over 360.
-	//if(direction > 359)
-	//{
-	//	direction -= 360;
-	//}
-	//else if(direction < 0)
-	//{
-	//	direction += 360;
-	//}
-	nxtDisplayTextLine(3, "%d", direction);
-	//}
+	if (readCompass != -1) {
+		//since the motor is not disconected then we offset
+		//direction += (int)(readCompass - read());  Testing a diff formula
+		direction += abs((int)(readCompass - read()));
+		//using subtraction to prevent the value from going over 360.
+		if(direction > 359)
+		{
+			direction -= 360;
+		}
+		else if(direction < 0)
+		{
+			direction += 360;
+		}
+		nxtDisplayTextLine(3, "%d", direction);
+	}
 
 
 	//Gets the velocity/speed from Joystick 2
@@ -157,11 +157,11 @@ task main()
 		} else if(joystick.joy2_Buttons & button7)
 		{
 			motor[MotorJ] = -35;
-		//	motor[MotorK] = -100;
+			//	motor[MotorK] = -100;
 		}else
 		{
 			motor[MotorJ] = -0;
-		//	motor[MotorK] = -0;
+			//	motor[MotorK] = -0;
 		}
 
 		if(joystick.joy2_Buttons & button2)

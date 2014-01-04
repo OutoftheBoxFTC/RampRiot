@@ -126,7 +126,7 @@ task p1
 	wait10Msec(100);
 	move(spin_right, 25);
 	wait1Msec(75);
-	move((basketNum <= 2 ? l : r), 60);
+	move((basketNum <= 2 ? l : r), 60);  // CHANGE VALUE FROM 60 TO NOT BREAK OUR AXLESESESES
 	wait10Msec(300);
 	move(none, 0);
 
