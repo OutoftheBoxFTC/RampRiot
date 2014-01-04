@@ -123,6 +123,7 @@ void initializeRobot() {
 	servo[servo1] = 255;
 	servo[servo2] = 0;
 	servo[servo3] = 255;
+	servo[servo4] = 0;
 	int total = 0;
 	int count = 0;
 
