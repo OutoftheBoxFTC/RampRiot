@@ -20,7 +20,7 @@ int getDirectionFromLocation(int x, int y)
 	//Calculates the Direction using Arc Tangent Angle 2 and returns a value 0-360
 	//float direction = atan2(joystick.joy1_y1 + 1,joystick.joy1_x1) / PI * 180; - This works but goes 0-180 and not 0-360
 	//float direction = atan2(joystick.joy1_y1 + 1,joystick.joy1_x1) / PI * 180 + 180; - This goes 0-360 but is counter clockwise
-	int direction = (atan2(y + 1, x) / (PI * 180 * -1) + 180);// Works perfectly and resolves previous problems
+	int direction = (atan2(y + 1, x) / PI * 180 * -1 + 180);// Works perfectly and resolves previous problems
 
 	//Rotates the degrees 90 to the right. Resulting in the top point being 0
 	if(direction < 90)
@@ -30,8 +30,8 @@ int getDirectionFromLocation(int x, int y)
 	{
 		direction -= 90;
 	}
-
-	//Next few lines are a new addition to prevent direction from going "out of bounds"
+  direction -= 45; //Compass is not perfectly aligned with the front o the robot
+	//Next few lines are a new addition to pr	event direction from going "out of bounds"
 
 	while(direction >= 360)
 	{
@@ -44,5 +44,6 @@ int getDirectionFromLocation(int x, int y)
 
 		// end new addition
 
+	nxtDisplayTextLine(4, "%d", direction);
 	return direction;
 }

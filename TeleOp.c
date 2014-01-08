@@ -67,28 +67,46 @@ int getVelocityFromJoy2()
 Combines all functions in the Library to set the robots motors
 power to head in a direction.
 */
-void assignMotorSpeedFromJoyStick()
+void assignMotorSpeedFromJoyStick(bool useCompass)
 {
 	//Get the direction in degrees that the robot needs to head from a coordinate map
-	int direction = getDirectionFromLocation(joystick.joy1_x1, joystick.joy1_y1);
+	float direction = getDirectionFromLocation(joystick.joy1_x1, joystick.joy1_y1);
 	// 0 is the 90 as of now, so it is normalized
-	direction += 90;
+	//direction += 90; NVM DO THAT SOMEWHERE ELSE
 	// need to prevent values > 360
-	while(direction >= 360)
+	if(direction >= 360)
 	{
 		direction -= 360;
 	}
-	while(direction <= -1)
+	if(direction <= -1)
 	{
 		direction += 360;
 	}
+	nxtDisplayTextLine(7, "%d", direction);
 	//read compass value
-	float readCompass = HTMCreadHeading(HTMC);
+	float readCompass = HTMCreadHeading(HTMC); // lets try something
 	//if its negative one its disconnected
 	if (readCompass != -1) {
+		int offset = (-1 * (readCompass - read());
 		//since the motor is not disconected then we offset
-		//direction += (int)(readCompass - read());  Testing a diff formula
-		direction += abs((int)(readCompass - read()));
+	  //direction += (int)(readCompass - read());  Testing a diff formula
+    // direction += (-1 * (readCompass - read()); // maybe it w0rks? nahh
+		if(useCompass)
+			{
+				direction += offset;
+	    }
+	 // int relHead = HTMCreadRelativeHeading(HTMC); // mbe relhead is be workng ?
+	 // if(relHead < 0)
+	 // 	{
+	 // 	  relHead = 180 - relHead;
+	 // 	}
+	 // 	relHead = 360 - relHead;   TRYING TO NORMALIZE RELHEADING
+
+	 // relHead += 179; //To make values properly btween 0 and 359
+	  //nxtDisplayTextLine(6, "RELHEAD : %d", relHead);
+	  	nxtDisplayTextLine(6, "offset : %d", offset);
+	//  direction += relHead;
+
 		//using subtraction to prevent the value from going over 360.
 		if(direction > 359)
 		{
@@ -121,6 +139,10 @@ void assignMotorSpeedFromJoyStick()
 		m3 = getMotorOutput(velocity, direction, 5 * defaultOffset);
 		m4 = getMotorOutput(velocity, direction, 7 * defaultOffset);
 	}
+	  int readDisplay = read();
+		int displayHeading = HTMCreadHeading(HTMC);
+		nxtDisplayTextLine(1, "%d", readDisplay);
+		nxtDisplayTextLine(2, "Compass: %d", displayHeading);
 
 
 	//Apply new power
@@ -143,24 +165,25 @@ void rotateRobot()
 
 task main()
 {
-
+	bool useCompass = true;
+  HTMCsetTarget(HTMC, 180);
 	waitForStart();
 	eraseDisplay();
-	float displayHeading;
-	float readDisplay;
+	//float displayHeading;
+	//float readDisplay;
 	while(true)
 	{
 		if(joystick.joy2_Buttons & button5)
 		{
-			motor[MotorJ] = 35;
+			motor[motorJ] = 35;
 			//motor[MotorK] = 100;
 		} else if(joystick.joy2_Buttons & button7)
 		{
-			motor[MotorJ] = -35;
+			motor[motorJ] = -35;
 			//	motor[MotorK] = -100;
 		}else
 		{
-			motor[MotorJ] = -0;
+			motor[motorJ] = -0;
 			//	motor[MotorK] = -0;
 		}
 
@@ -202,13 +225,39 @@ task main()
 			move(spin_left, getVelocityFromJoy2());
 		}
 
+		else if(joystick.joy1_Buttons & button7)
+		{
+			move(spin_right, getVelocityFromJoy2());
+		}
+		else if(joystick.joy1_Buttons & button8)
+		{
+			move(spin_left, getVelocityFromJoy2());
+		}
 		else
 		{
-			assignMotorSpeedFromJoyStick();
+			assignMotorSpeedFromJoyStick(useCompass);
 		}
-		readDisplay = read();
-		displayHeading = HTMCreadHeading(HTMC);
-		nxtDisplayTextLine(1, "%d", readDisplay);
-		nxtDisplayTextLine(2, "%d", displayHeading);
+
+		if(joystick.joy1_Buttons & button1)
+		{
+			HTMCsetTarget(HTMC, 180);
+			PlaySound(soundBeepBeep);
+			wait1Msec(100);
+		}
+		else if(joystick.joy1_Buttons & button2)
+		{
+			useCompass = !useCompass;
+			if(useCompass)
+				{
+			PlaySound(soundBlip);
+			PlaySound(soundBlip);
+			PlaySound(soundBlip);
+				}
+				else
+					{
+					   playSound(soundFastUpwardTones);
+					}
+			wait10Msec(50);
+		}
 	}
 }
