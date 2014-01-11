@@ -6,8 +6,8 @@
 #pragma config(Motor,  mtr_S1_C1_2,     Motor3,        tmotorTetrix, openLoop, reversed)
 #pragma config(Motor,  mtr_S1_C2_1,     Motor4,        tmotorTetrix, openLoop, reversed)
 #pragma config(Motor,  mtr_S1_C2_2,     Motor1,        tmotorTetrix, openLoop, reversed)
-#pragma config(Motor,  mtr_S1_C3_1,     motorH,        tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C3_2,     motorI,        tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C3_1,     motor5,        tmotorTetrix, openLoop, reversed)
+#pragma config(Motor,  mtr_S1_C3_2,     motor6,        tmotorTetrix, openLoop, reversed)
 #pragma config(Motor,  mtr_S1_C4_1,     Motor5,        tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C4_2,     motor6,        tmotorTetrix, openLoop)
 #pragma config(Servo,  srvo_S2_C1_1,    servo1,               tServoNone)
@@ -123,11 +123,13 @@ void initializeRobot() {
 	servo[servo1] = 255;
 	servo[servo2] = 0;
 	servo[servo3] = 255;
-	servo[servo4] = 0;
+	servo[servo4] = 20;
+	servo[servo5] = 255;
 	int total = 0;
 	int count = 0;
-
-	while (count < 5) {
+	int waitTime;
+	bool hasSelectedWait = false;
+	/*while (count < 5) {
 		// Get the true heading and relative heading from the sensor and
 		// display them on the screen.
 		while(nNxtButtonPressed != kEnterButton) {
@@ -155,6 +157,7 @@ void initializeRobot() {
 		while(bSoundActive) break;
 	}
 	write(total / count);
+	*/
 
 	while(nNxtButtonPressed != kEnterButton && !hasSelected)
 	{ //kEnterButton is the orange button
@@ -181,17 +184,39 @@ void initializeRobot() {
 	}
 	hasSelected = true;//prevents an infinite loop of program selection
 	nxtDisplayCenteredBigTextLine(3, "Waiting ");
+
+/*	while(nNxtButtonPressed != kEnterButton && !hasSelectedWait)
+	{
+		if (nNxtButtonPressed == kLeftButton) {
+			waitTime++; // scrolls to the next option
+			PlaySound(soundBlip);
+			eraseDisplay();
+		} else if(nNxtButtonPressed == kRightButton)
+		{
+
+			waitTime--; // Scrolls backwards
+			PlaySound(soundBlip);
+			eraseDisplay();
+		}
+		nxtDisplayTextLine(2, "PLEASE SET WAIT TIME");
+    nxtDisplayTextLine(2, "WAIT TIME IS:");
+    nxtDisplayTextLine(3, "%d", waitTime);
+	}
+	setWaitTime(waitTime);
+	PlaySound(soundBeepBeep);
+	eraseDisplay();
+	*/
 }
 
 
 task main()
 {
-initializeRobot();
-//Wait till start to begin executing
+	initializeRobot();
+	//Wait till start to begin executing
 
-waitForStart();
-//Start an autonomous program from the incuded files.
-updateTask(pNum, START);
-//Start a paging file to act as a program place holder.
-while (true);
+	waitForStart();
+	//Start an autonomous program from the incuded files.
+	updateTask(pNum, START);
+	//Start a paging file to act as a program place holder.
+	while (true);
 }
